@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Router from "next/router";
 
+// Importa condicionalmente as bibliotecas necessárias para o FusionCharts
+let ReactFC, FusionCharts, Charts;
+if (typeof window !== "undefined") {
+  ReactFC = require("react-fusioncharts").default;
+  FusionCharts = require("fusioncharts");
+  Charts = require("fusioncharts/fusioncharts.charts");
+  ReactFC.fcRoot(FusionCharts, Charts);
+}
+
 const DashboardPage = () => {
   const [locationName, setLocationName] = useState("");
   const [floodData, setFloodData] = useState(null);
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const [isClient, setIsClient] = useState(false);
+  const gmapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
+    setIsClient(true);
+
     // Verifica se o usuário está logado
     const jwt = localStorage.getItem("jwt");
     if (!jwt) {
@@ -20,7 +32,7 @@ const DashboardPage = () => {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           locationName
-        )}&key=${apiKey}`
+        )}&key=${gmapsApiKey}`
       );
       const data = await response.json();
       if (data.results && data.results.length > 0) {
@@ -39,7 +51,7 @@ const DashboardPage = () => {
       const coordinates = await getCoordinatesFromName(locationName);
       const jwt = localStorage.getItem("jwt");
       const floodDataResponse = await fetch(
-        `${backUrl}/api/flood?latitude=${coordinates.lat}&longitude=${coordinates.lng}`,
+        `https://nextjs-docker-back-floodforec-image-jb3xebxfoa-wl.a.run.app/api/flood?latitude=${coordinates.lat}&longitude=${coordinates.lng}`,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -48,11 +60,34 @@ const DashboardPage = () => {
       );
 
       const floodData = await floodDataResponse.json();
-      console.log("Dados recebidos da API:", floodData);
       setFloodData(floodData);
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
     }
+  };
+
+  const dataSource = floodData
+    ? {
+        chart: {
+          caption: "Dados de Vazão do Rio mais próximo",
+          subCaption: `Latitude: ${floodData.latitude}, Longitude: ${floodData.longitude}`,
+          xAxisName: "Data",
+          yAxisName: "Vazão (m³/s)",
+          theme: "fusion",
+        },
+        data: floodData.daily.time.map((date, index) => ({
+          label: date,
+          value: floodData.daily.river_discharge[index],
+        })),
+      }
+    : {};
+
+  const chartConfigs = {
+    type: "line",
+    width: "100%",
+    height: "400",
+    dataFormat: "json",
+    dataSource,
   };
 
   return (
@@ -64,25 +99,18 @@ const DashboardPage = () => {
           <input
             value={locationName}
             onChange={(e) => setLocationName(e.target.value)}
-            placeholder="Digite a localização (ex: Oslo, Noruega)"
+            placeholder="Digite a localização (ex: Recife, Pernambuco)"
           />
           <button onClick={handleSearch}>Pesquisar</button>
         </div>
 
-        {floodData && floodData.daily && floodData.daily.time && (
+        {floodData && floodData.daily && floodData.daily.time && isClient && (
           <div className="data-box">
             <h3>
               Dados de Enchente para Latitude {floodData.latitude} e Longitude{" "}
               {floodData.longitude}
             </h3>
-            <ul>
-              {floodData.daily.time.map((date, index) => (
-                <li key={date}>
-                  {date}: {floodData.daily.river_discharge[index]}{" "}
-                  {floodData.daily_units.river_discharge}
-                </li>
-              ))}
-            </ul>
+            <ReactFC {...chartConfigs} />
           </div>
         )}
       </div>
