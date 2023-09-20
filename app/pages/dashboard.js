@@ -36,10 +36,18 @@ const DashboardPage = () => {
   const handleSearch = async () => {
     try {
       const coordinates = await getCoordinatesFromName(locationName);
+      const jwt = localStorage.getItem("jwt");
       const floodDataResponse = await fetch(
-        `https://flood-api.open-meteo.com/v1/flood?latitude=${coordinates.lat}&longitude=${coordinates.lng}&daily=river_discharge&forecast_days=7`
+        `http://localhost:3000/api/flood?latitude=${coordinates.lat}&longitude=${coordinates.lng}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
       );
+
       const floodData = await floodDataResponse.json();
+      console.log("Dados recebidos da API:", floodData);
       setFloodData(floodData);
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
@@ -60,7 +68,7 @@ const DashboardPage = () => {
           <button onClick={handleSearch}>Pesquisar</button>
         </div>
 
-        {floodData && (
+        {floodData && floodData.daily && floodData.daily.time && (
           <div className="data-box">
             <h3>
               Dados de Enchente para Latitude {floodData.latitude} e Longitude{" "}
