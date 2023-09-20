@@ -1,32 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 
-function index() {
-  const [message, setMessage] = useState(["Loading..."]);
-  const [people, setPeople] = useState([]);
+function Index() {
+  const router = useRouter();
 
   useEffect(() => {
-    fetch("http://localhost:80/api/")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data && data.message) {
-          setMessage(data.message);
-          setPeople(data.people);
-        } else {
-          setMessage("Unexpected response format");
-        }
-      });
-  }, []);
+    router.push("/dashboard");
+  }, [router]);
 
-  return (
-    <div>
-      <div>{message}</div>
-
-      {people.map((person, index) => {
-        <div key={index}>{person}</div>;
-      })}
-    </div>
-  );
+  return null; // Poderia retornar um fallback
 }
 
-export default index;
+export default Index;
