@@ -58,3 +58,12 @@ To redeploy, you need to run:
 gcloud builds submit --region=us-west2 --tag us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front-floodforec-docker-repo/nextjs-docker-front-floodforec-image:prd
 gcloud run deploy --image=us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front-floodforec-docker-repo/nextjs-docker-front-floodforec-image:prd
 ```
+
+To add Env variables:
+gcloud run deploy --image=us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front-floodforec-docker-repo/nextjs-docker-front-floodforec-image:prd \
+ --set-env-vars=NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your-api-key-here
+
+Or if its already deployed and you just want to update:
+
+gcloud run services update [SERVICE_NAME] \
+ --set-env-vars NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your-api-key-here
