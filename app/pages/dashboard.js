@@ -5,6 +5,7 @@ const DashboardPage = () => {
   const [locationName, setLocationName] = useState("");
   const [floodData, setFloodData] = useState(null);
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
     // Verifica se o usuário está logado
@@ -38,7 +39,7 @@ const DashboardPage = () => {
       const coordinates = await getCoordinatesFromName(locationName);
       const jwt = localStorage.getItem("jwt");
       const floodDataResponse = await fetch(
-        `http://localhost:3000/api/flood?latitude=${coordinates.lat}&longitude=${coordinates.lng}`,
+        `${backUrl}/api/flood?latitude=${coordinates.lat}&longitude=${coordinates.lng}`,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,

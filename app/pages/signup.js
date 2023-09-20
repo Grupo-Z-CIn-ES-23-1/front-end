@@ -5,6 +5,7 @@ const RegisterPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +16,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/register", {
+      const response = await fetch(`${backUrl}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
