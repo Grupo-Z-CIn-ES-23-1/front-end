@@ -6,7 +6,7 @@ steps:
         "build",
         "-t",
         "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd",
-        ".",
+        "./app/",
       ]
   # Push the container image to Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
