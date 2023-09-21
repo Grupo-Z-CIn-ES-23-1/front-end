@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import Router from "next/router";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      alert("As senhas não coincidem. Tente novamente.");
+      return;
+    }
+
     try {
       const response = await fetch(
-        `https://nextjs-docker-back-floodforec-image-jb3xebxfoa-wl.a.run.app/api/login`,
+        `https://nextjs-docker-back-floodforec-image-jb3xebxfoa-wl.a.run.app/api/register`,
         {
           method: "POST",
           headers: {
@@ -23,25 +30,21 @@ const LoginPage = () => {
       const data = await response.json();
       console.log("Resposta da API:", data); // Para fins de depuração
 
-      if (data.token) {
-        localStorage.setItem("jwt", data.token);
-        Router.push("/dashboard"); // Redireciona para o painel após o login.
+      if (data.message === "User registered successfully.") {
+        alert("Usuário registrado com sucesso!");
+        Router.push("/login"); // Redireciona para a página de login após o cadastro.
       } else {
-        alert(data.message || "Erro no login");
+        alert(data.message || "Erro ao registrar");
       }
     } catch (error) {
-      console.error("Erro no login:", error);
+      console.error("Erro no cadastro:", error);
     }
-  };
-
-  const handleSignupClick = () => {
-    Router.push("/signup"); // Redireciona para a página de cadastro.
   };
 
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h2>Login</h2>
+        <h2>Cadastro</h2>
         <form onSubmit={handleSubmit}>
           <input
             value={username}
@@ -52,16 +55,19 @@ const LoginPage = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder="Senha"
           />
-          <div className="button-container">
-            <button type="submit">Login</button>
-            <button onClick={handleSignupClick}>Cadastro</button>
-          </div>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirme sua senha"
+          />
+          <button type="submit">Registrar</button>
         </form>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

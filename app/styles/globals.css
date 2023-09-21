@@ -1,3 +1,91 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.auth-container,
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+
+.auth-container {
+  background-image: url('https://d2r55xnwy6nx47.cloudfront.net/uploads/2022/06/River-Networks_2880x1620_Lede.jpg');
+}
+
+.dashboard-container {
+  background-color: #4CAF50;
+  /* Cor verde para o dashboard */
+}
+
+.auth-box,
+.dashboard-box {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.auth-box {
+  width: 300px;
+}
+
+.dashboard-box {
+  width: 80%;
+  max-width: 1000px;
+}
+
+.auth-box input,
+.dashboard-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.auth-box button,
+.dashboard-box button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.auth-box button:hover,
+.dashboard-box button:hover {
+  background-color: #45a049;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button-container button {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.data-box {
+  height: 400px;
+  overflow: auto;
+  margin-top: 20px;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+}
+
+.search-box button {
+  width: auto;
+  padding: 10px 20px;
+}
