@@ -18,6 +18,8 @@ const DashboardPage = () => {
   const backUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
+    console.log("Chave da API do Google Maps:", gmapsApiKey);
+
     setIsClient(true);
 
     // Verifica se o usuário está logado
