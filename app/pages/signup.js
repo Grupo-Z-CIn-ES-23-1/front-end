@@ -16,13 +16,16 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await fetch(`${backUrl}/api/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await fetch(
+        `https://nextjs-docker-back-floodforec-image-jb3xebxfoa-wl.a.run.app/api/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
       const data = await response.json();
       console.log("Resposta da API:", data); // Para fins de depuração
