@@ -5,7 +5,7 @@ steps:
       [
         "build",
         "-t",
-        "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-docker-image:prd",
+        "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd",
         ".",
       ]
   # Push the container image to Artifact Registry
@@ -13,7 +13,7 @@ steps:
     args:
       [
         "push",
-        "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-docker-image:prd",
+        "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd",
       ]
   # Deploy container image to Cloud Run
   - name: "gcr.io/cloud-builders/cloudsdktool/cloud-sdk"
@@ -24,9 +24,9 @@ steps:
         "deploy",
         "nextjs-docker-front2-floodforec-image",
         "--image",
-        "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-docker-image:prd",
+        "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd",
         "--region",
         "us-west2",
       ]
 images:
-  - "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-docker-image:prd"
+  - "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd"
