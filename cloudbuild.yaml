@@ -8,6 +8,7 @@ steps:
         "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd",
         ".",
       ]
+
   # Push the container image to Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args:
@@ -15,18 +16,27 @@ steps:
         "push",
         "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd",
       ]
-  # Deploy container image to Cloud Run
-  - name: "gcr.io/cloud-builders/cloudsdktool/cloud-sdk"
-    entrypoint: gcloud
+
+  # Retrieve secret from Secret Manager
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
-      [
-        "run",
-        "deploy",
-        "nextjs-docker-front2-floodforec-image",
-        "--image",
-        "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd",
-        "--region",
-        "us-west2",
-      ]
+      - '-c'
+      - |
+        SECRET=$(gcloud secrets versions access latest --secret="NEXT_PUBLIC_GOOGLE_MAPS_API_KEY")
+        echo "export NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$SECRET" >> /workspace/env_vars
+
+  # Deploy container image to Cloud Run with environment variable
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        source /workspace/env_vars
+        gcloud run deploy nextjs-docker-front2-floodforec-image \
+          --image us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd \
+          --region us-west2 \
+          --set-env-vars "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY"
+
 images:
   - "us-west2-docker.pkg.dev/stellar-lock-399303/nextjs-docker-front2-floodforec-docker-repo/nextjs-docker-front2-floodforec-image:prd"
